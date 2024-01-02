@@ -1,0 +1,23 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: karsajobs-ui-deployment
+  namespace: karsajobs
+spec:
+  replicas: 3
+  selector:
+    matchLabels:
+      app: karsajobs-ui
+  template:
+    metadata:
+      labels:
+        app: karsajobs-ui
+    spec:
+      containers:
+        - name: karsajobs-ui
+          image: ghcr.io/agung-parama/karsajobs/karsajobs-ui:latest
+          ports:
+            - containerPort: 80
+          env:
+            - name: VUE_APP_BACKEND
+              value: "http://karsajobs-service.karsajobs.svc.cluster.local:8080"

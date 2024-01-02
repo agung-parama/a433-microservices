@@ -1,0 +1,36 @@
+apiVersion: apps/v1
+kind: StatefulSet
+metadata:
+  name: mongo-statefulset
+  namespace: karsajobs
+spec:
+  serviceName: "mongo-service"
+  replicas: 1
+  selector:
+    matchLabels:
+      app: mongodb
+  template:
+    metadata:
+      labels:
+        app: mongodb
+    spec:
+      containers:
+        - name: mongodb
+          image: mongo:latest
+          volumeMounts:
+            - name: mongo-config
+              mountPath: /config
+            - name: mongo-credentials
+              mountPath: /etc/mongo-credentials
+            - name: mongo-data
+              mountPath: /data/db
+      volumes:
+        - name: mongo-config
+          configMap:
+            name: mongo-configmap
+        - name: mongo-credentials
+          secret:
+            secretName: mongo-secret
+        - name: mongo-data
+          persistentVolumeClaim:
+            claimName: mongo-pvc
